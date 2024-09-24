@@ -176,10 +176,10 @@
         let height = 1350; // 6 inches -> 1350 points in 72 DPI
         let margin = 50;
         const options = {
-          x: 50,
-          y: 50,
-          width: width - 100,
-          height: height - 100,
+          x: margin,
+          y: margin,
+          width: width,
+          height: height,
           borderColor: "black",
           background: "transparent"
         }
@@ -193,7 +193,34 @@
           stamp: qrBlob 
         }
         const qrStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", qrStampOptions); // Create a default Stamp annotation instance.
+        const firstLineOptions = {
+          startPoint: {x:margin, y:300},
+          endPoint: {x:width+margin, y:300},
+          borderWidth: 2,
+          borderColor: "black",
+          background: "black"
+        }
+        const firstline = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "line", firstLineOptions);
+        const senderInfo = document.getElementById("senderName")
+        const senderTextBoxOptions = {
+          x: 80,
+          y: 320,
+          width: 300,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: getSenderText()
+        };
+        const senderTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", senderTextBoxOptions);
       });
+    }
+
+    function getSenderText(){
+      let text = document.getElementById("senderName").value + "\n";
+      text = text + document.getElementById("senderPhone").value + "\n";
+      text = text + document.getElementById("senderAddressLineOne").value + "\n";
+      text = text + document.getElementById("senderAddressLineTwo").value;
+      return [{content: text, fontSize: 20}]
     }
 
     function getDataFor2D(){
