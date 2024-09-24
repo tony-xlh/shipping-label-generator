@@ -3,7 +3,87 @@
 <head>
   <title>Online Shipping Label Generator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+  <style>
+    h2 {
+      text-align: center;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+    }
+
+    .section {
+      padding: 5px 20px;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
+  <div id="app">
+    <h2>Online Shipping Label Generator</h2>
+    <div class="form">
+      <div class="section">
+        <h3>Sender:</h3>
+        <div>
+          <label for="senderName">
+            Name: <input id="senderName" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderPhone">
+            Phone: <input id="senderPhone" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderAddress">
+            Address: <input id="senderAddress" type="text"/>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3>To:</h3>
+        <div>
+          <label for="receiverName">
+            Name: <input id="receiverName" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverPhone">
+            Phone: <input id="receiverPhone" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverAddress">
+            Address: <input id="receiverAddress" type="text"/>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Other:</h3>
+        <label for="packageNumber">
+          Package Number: <input id="packageNumber" type="text"/>
+        </label>
+      </div>
+      <div class="section">
+        <div>
+          <button>Generate</button>
+          <button>Fill in template</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+  </div>
 </body>
 </html>
