@@ -46,8 +46,13 @@
           </label>
         </div>
         <div>
-          <label for="senderAddress">
-            Address: <input id="senderAddress" type="text"/>
+          <label for="senderAddressLineOne">
+            Address Line 1: <input id="senderAddressLineOne" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderAddressLineTwo">
+            Address Line 2: <input id="senderAddressLineTwo" type="text"/>
           </label>
         </div>
       </div>
@@ -64,8 +69,13 @@
           </label>
         </div>
         <div>
-          <label for="receiverAddress">
-            Address: <input id="receiverAddress" type="text"/>
+          <label for="receiverAddressLineOne">
+            Address Line 1: <input id="receiverAddressLineOne" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverAddressLineTwo">
+            Address Line 2: <input id="receiverAddressLineTwo" type="text"/>
           </label>
         </div>
       </div>
@@ -77,13 +87,47 @@
       </div>
       <div class="section">
         <div>
-          <button>Generate</button>
-          <button>Fill in template</button>
+          <button onclick="generate()">Generate</button>
+          <button onclick="fillInTemplate()">Fill in template</button>
         </div>
       </div>
     </div>
   </div>
   <div>
   </div>
+  <script>
+    function generate(){
+      let data = getData();
+    }
+
+    function getData(){
+      let data = {
+        "senderName": document.getElementById("senderName").value,
+        "senderName": document.getElementById("senderName").value,
+        "senderPhone": document.getElementById("senderPhone").value,
+        "senderAddressLineOne": document.getElementById("senderAddressLineOne").value,
+        "senderAddressLineTwo": document.getElementById("senderAddressLineTwo").value,
+        "receiverName": document.getElementById("receiverName").value,
+        "receiverPhone": document.getElementById("receiverPhone").value,
+        "receiverAddressLineOne": document.getElementById("receiverAddressLineOne").value,
+        "receiverAddressLineTwo": document.getElementById("receiverAddressLineTwo").value,
+        "packageNumber": document.getElementById("packageNumber").value
+      }
+      console.log(data);
+      return data;
+    }
+
+    function fillInTemplate(){
+      document.getElementById("senderName").value = "Tom Ford";
+      document.getElementById("senderPhone").value = "+44-3381-291-918";
+      document.getElementById("senderAddressLineOne").value = "536 The Crescent MOTHERWELL";
+      document.getElementById("senderAddressLineTwo").value = "ML81 7LR";
+      document.getElementById("receiverName").value = "Mark Selby";
+      document.getElementById("receiverPhone").value = "+44-3154-235-146";
+      document.getElementById("receiverAddressLineOne").value = "41 George Street LERWICK";
+      document.getElementById("receiverAddressLineTwo").value = "ZE37 3OM";
+      document.getElementById("packageNumber").value = "1234567890";
+    }
+  </script>
 </body>
 </html>
