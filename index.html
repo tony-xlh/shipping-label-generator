@@ -3,6 +3,7 @@
 <head>
   <title>Online Shipping Label Generator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bwip-js/dist/bwip-js-min.js"></script>
   <style>
     h2 {
       text-align: center;
@@ -26,6 +27,10 @@
     .section {
       padding: 5px 20px;
       width: 100%;
+    }
+
+    .barcodes svg {
+      max-height: 100px;
     }
   </style>
 </head>
@@ -93,27 +98,37 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="barcodes">
+    <div id="code128"></div>
+    <div id="datamatrix"></div>
   </div>
   <script>
     function generate(){
-      let data = getData();
+      let code128SVG = bwipjs.toSVG({
+        bcid:        'code128',       // Barcode type
+        text:        document.getElementById("packageNumber").value,    // Text to encode
+        height:      12,              // Bar height, in millimeters
+        includetext: true,            // Show human-readable text
+        textxalign:  'center',        // Always good to set this
+        textcolor:   '000000',        // Black text
+      });
+      document.getElementById("code128").innerHTML = code128SVG;
+      let text = JSON.stringify(getDataFor2D(),null,0);
+      console.log(text);
+      let dataMatrixSVG = bwipjs.toSVG({
+        bcid:        'qrcode',       // Barcode type
+        text:        text,    // Text to encode
+      });
+      console.log(dataMatrixSVG);
+      document.getElementById("datamatrix").innerHTML = dataMatrixSVG;
     }
 
-    function getData(){
+    function getDataFor2D(){
       let data = {
         "senderName": document.getElementById("senderName").value,
-        "senderName": document.getElementById("senderName").value,
-        "senderPhone": document.getElementById("senderPhone").value,
-        "senderAddressLineOne": document.getElementById("senderAddressLineOne").value,
-        "senderAddressLineTwo": document.getElementById("senderAddressLineTwo").value,
         "receiverName": document.getElementById("receiverName").value,
-        "receiverPhone": document.getElementById("receiverPhone").value,
-        "receiverAddressLineOne": document.getElementById("receiverAddressLineOne").value,
-        "receiverAddressLineTwo": document.getElementById("receiverAddressLineTwo").value,
         "packageNumber": document.getElementById("packageNumber").value
       }
-      console.log(data);
       return data;
     }
 
