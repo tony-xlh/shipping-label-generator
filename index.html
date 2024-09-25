@@ -178,7 +178,7 @@
       context.fillRect(0,0,canvas.width,canvas.height);
       canvas.toBlob(async (blob) => {
         await doc.loadSource(blob);
-        const pageUid = editViewer.indexToUid(0);
+        const pageUid = editViewer.indexToUid(doc.pages.length - 1);
         let width = 900; // 4 inches -> 900 points in 72 DPI
         let height = 1350; // 6 inches -> 1350 points in 72 DPI
         let margin = 50;
@@ -259,6 +259,7 @@
           stamp: barcodeBlob 
         }
         const barcodeStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", barcodeStampOptions);
+        editViewer.goToPage(doc.pages.length - 1);
       });
     }
 
