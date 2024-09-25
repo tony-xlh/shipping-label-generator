@@ -170,7 +170,10 @@
     function drawLabel(){
       let canvas = document.createElement("canvas");
       canvas.width = 2480; //A4 size in 300 DPI
-      canvas.height = 3508; 
+      canvas.height = 3508;
+      let context = canvas.getContext('2d');
+      context.fillStyle = 'rgb(255,255,255)';
+      context.fillRect(0,0,canvas.width,canvas.height);
       canvas.toBlob(async (blob) => {
         await doc.loadSource(blob);
         const pageUid = editViewer.indexToUid(0);
