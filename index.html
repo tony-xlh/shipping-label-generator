@@ -180,31 +180,31 @@
           y: margin,
           width: width,
           height: height,
+          borderWidth: 5,
           borderColor: "black",
           background: "transparent"
         }
         const rect = Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "rectangle",options);
         const qrBlob = await getBarcodeImageBlob("qrcodeCVS");
         const qrStampOptions = {
-          x: 80,
-          y: 80,
+          x: 90,
+          y: 90,
           width: 200,
           height: 200,
           stamp: qrBlob 
         }
-        const qrStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", qrStampOptions); // Create a default Stamp annotation instance.
+        const qrStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", qrStampOptions);
         const firstLineOptions = {
-          startPoint: {x:margin, y:300},
-          endPoint: {x:width+margin, y:300},
+          startPoint: {x:margin, y:340},
+          endPoint: {x:width+margin, y:340},
           borderWidth: 2,
           borderColor: "black",
           background: "black"
         }
         const firstline = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "line", firstLineOptions);
-        const senderInfo = document.getElementById("senderName")
         const senderTextBoxOptions = {
-          x: 80,
-          y: 320,
+          x: 90,
+          y: 400,
           width: 300,
           height: 150,
           textAlign: "left",
@@ -212,6 +212,46 @@
           textContents: getSenderText()
         };
         const senderTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", senderTextBoxOptions);
+        const toTextBoxOptions = {
+          x: 90,
+          y: 640,
+          width: 50,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: [{"content":"To:","fontWeight":"bold","fontSize":24}]
+        }
+        const toTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", toTextBoxOptions);
+        const receiverTextBoxOptions = {
+          x: 140,
+          y: 640,
+          width: 300,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: getReceiverText()
+        };
+        const receiverTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", receiverTextBoxOptions);
+        const secondLineOptions = {
+          startPoint: {x:margin, y:870},
+          endPoint: {x:width+margin, y:870},
+          borderWidth: 2,
+          borderColor: "black",
+          background: "black"
+        }
+        const secondline = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "line", secondLineOptions);
+        const barcodeBlob = await getBarcodeImageBlob("code128CVS");
+        const code128Canvas = document.getElementById("code128CVS");
+        const barcodeWidth = width*0.7
+        const barcodeHeight = code128Canvas.height/(code128Canvas.width/barcodeWidth);
+        const barcodeStampOptions = {
+          x: 90,
+          y: 940,
+          width: barcodeWidth,
+          height: barcodeHeight,
+          stamp: barcodeBlob 
+        }
+        const barcodeStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", barcodeStampOptions);
       });
     }
 
@@ -220,7 +260,15 @@
       text = text + document.getElementById("senderPhone").value + "\n";
       text = text + document.getElementById("senderAddressLineOne").value + "\n";
       text = text + document.getElementById("senderAddressLineTwo").value;
-      return [{content: text, fontSize: 20}]
+      return [{content: text, fontSize: 22}]
+    }
+
+    function getReceiverText(){
+      let text = document.getElementById("receiverName").value + "\n";
+      text = text + document.getElementById("receiverPhone").value + "\n";
+      text = text + document.getElementById("receiverAddressLineOne").value + "\n";
+      text = text + document.getElementById("receiverAddressLineTwo").value;
+      return [{content: text, fontSize: 22}]
     }
 
     function getDataFor2D(){
@@ -241,7 +289,7 @@
       document.getElementById("receiverPhone").value = "+44-3154-235-146";
       document.getElementById("receiverAddressLineOne").value = "41 George Street LERWICK";
       document.getElementById("receiverAddressLineTwo").value = "ZE37 3OM";
-      document.getElementById("packageNumber").value = "1234567890";
+      document.getElementById("packageNumber").value = "ABCDEF1234567890";
     }
   </script>
 </body>
