@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Shipping Label Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bwip-js/dist/bwip-js-min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dynamsoft-document-viewer@latest/dist/ddv.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dynamsoft-document-viewer@latest/dist/ddv.css">
+  <style>
+    h2 {
+      text-align: center;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      border: 1px solid lightgray;
+      border-radius: 5px;
+    }
+
+    .section {
+      padding: 5px 20px;
+      width: 100%;
+    }
+
+    .barcodes svg {
+      max-height: 100px;
+    }
+
+    #container {
+      margin-top: 20px;
+      width: 80%;
+      height: 480px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>Online Shipping Label Generator</h2>
+    <div class="form">
+      <div class="section">
+        <h3>Sender:</h3>
+        <div>
+          <label for="senderName">
+            Name: <input id="senderName" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderPhone">
+            Phone: <input id="senderPhone" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderAddressLineOne">
+            Address Line 1: <input id="senderAddressLineOne" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderAddressLineTwo">
+            Address Line 2: <input id="senderAddressLineTwo" type="text"/>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3>To:</h3>
+        <div>
+          <label for="receiverName">
+            Name: <input id="receiverName" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverPhone">
+            Phone: <input id="receiverPhone" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverAddressLineOne">
+            Address Line 1: <input id="receiverAddressLineOne" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverAddressLineTwo">
+            Address Line 2: <input id="receiverAddressLineTwo" type="text"/>
+          </label>
+        </div>
+      </div>
+      <div class="section">
+        <h3>Other:</h3>
+        <label for="packageNumber">
+          Package Number: <input id="packageNumber" type="text"/>
+        </label>
+      </div>
+      <div class="section">
+        <div>
+          <button onclick="generate()">Generate</button>
+          <button onclick="fillInTemplate()">Fill in template</button>
+        </div>
+      </div>
+    </div>
+    <div class="barcodes" style="display: none;">
+      <div id="code128"><canvas id="code128CVS"></canvas></div>
+      <div id="qrcode"><canvas id="qrcodeCVS"></canvas></div>
+    </div>
+    <div id="container"></div>
+  </div>
+  <script>
+    let editViewer;
+    let doc;
+    init();
+
+    async function init(){
+      await initDDV();
+      await initEditViewer()
+    }
+
+    async function initDDV(){
+      Dynamsoft.DDV.Core.license = "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ=="; // Public trial license which is valid for 24 hours
+      Dynamsoft.DDV.Core.engineResourcePath = "https://cdn.jsdelivr.net/npm/dynamsoft-document-viewer@latest/dist/engine";// Lead to a folder containing the distributed WASM files
+      await Dynamsoft.DDV.Core.loadWasm();
+      await Dynamsoft.DDV.Core.init(); 
+    }
+
+    function initEditViewer(){
+      // Configure image filter feature
+      Dynamsoft.DDV.setProcessingHandler("imageFilter", new Dynamsoft.DDV.ImageFilter());
+      // Create an edit viewer
+      editViewer = new Dynamsoft.DDV.EditViewer({
+        container: "container",
+        uiConfig: Dynamsoft.DDV.getDefaultUiConfig("editViewer", {includeAnnotationSet: true}),
+      });
+      const docManager = Dynamsoft.DDV.documentManager;
+      doc = docManager.createDocument();
+      editViewer.openDocument(doc.uid);
+    }
+
+    function generate(){
+      let code128CVS = bwipjs.toCanvas("code128CVS",{
+        bcid:        'code128',       // Barcode type
+        text:        document.getElementById("packageNumber").value,    // Text to encode
+        scale:       5,
+        height:      12,              // Bar height, in millimeters
+        includetext: true,            // Show human-readable text
+        textxalign:  'center',        // Always good to set this
+        textcolor:   '000000',        // Black text
+      });
+      let text = JSON.stringify(getDataFor2D(),null,0);
+      console.log(text);
+      let qrcodeCVS = bwipjs.toCanvas("qrcodeCVS",{
+        bcid:        'qrcode',       // Barcode type
+        text:        text,    // Text to encode
+        scale:       5
+      });
+      drawLabel();
+    }
+
+    function getBarcodeImageBlob(id){
+      return new Promise((resolve, reject) => {
+        let canvas = document.getElementById(id);
+        canvas.toBlob(async (blob) => {
+          resolve(blob)
+        });
+      })
+    }
+
+    function drawLabel(){
+      let canvas = document.createElement("canvas");
+      canvas.width = 2480; //A4 size in 300 DPI
+      canvas.height = 3508;
+      let context = canvas.getContext('2d');
+      context.fillStyle = 'rgb(255,255,255)';
+      context.fillRect(0,0,canvas.width,canvas.height);
+      canvas.toBlob(async (blob) => {
+        await doc.loadSource(blob);
+        const pageUid = editViewer.indexToUid(doc.pages.length - 1);
+        let width = 900; // 4 inches -> 900 points in 72 DPI
+        let height = 1350; // 6 inches -> 1350 points in 72 DPI
+        let margin = 50;
+        const options = {
+          x: margin,
+          y: margin,
+          width: width,
+          height: height,
+          borderWidth: 5,
+          borderColor: "black",
+          background: "transparent"
+        }
+        const rect = Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "rectangle",options);
+        const qrBlob = await getBarcodeImageBlob("qrcodeCVS");
+        const qrStampOptions = {
+          x: 90,
+          y: 90,
+          width: 200,
+          height: 200,
+          stamp: qrBlob 
+        }
+        const qrStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", qrStampOptions);
+        const firstLineOptions = {
+          startPoint: {x:margin, y:340},
+          endPoint: {x:width+margin, y:340},
+          borderWidth: 2,
+          borderColor: "black",
+          background: "black"
+        }
+        const firstline = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "line", firstLineOptions);
+        const senderTextBoxOptions = {
+          x: 90,
+          y: 400,
+          width: 300,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: getSenderText()
+        };
+        const senderTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", senderTextBoxOptions);
+        const toTextBoxOptions = {
+          x: 90,
+          y: 640,
+          width: 50,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: [{"content":"To:","fontWeight":"bold","fontSize":24}]
+        }
+        const toTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", toTextBoxOptions);
+        const receiverTextBoxOptions = {
+          x: 140,
+          y: 640,
+          width: 300,
+          height: 150,
+          textAlign: "left",
+          borderWidth: 0,
+          textContents: getReceiverText()
+        };
+        const receiverTextBox = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "textBox", receiverTextBoxOptions);
+        const secondLineOptions = {
+          startPoint: {x:margin, y:870},
+          endPoint: {x:width+margin, y:870},
+          borderWidth: 2,
+          borderColor: "black",
+          background: "black"
+        }
+        const secondline = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "line", secondLineOptions);
+        const barcodeBlob = await getBarcodeImageBlob("code128CVS");
+        const code128Canvas = document.getElementById("code128CVS");
+        const barcodeWidth = width*0.7
+        const barcodeHeight = code128Canvas.height/(code128Canvas.width/barcodeWidth);
+        const barcodeStampOptions = {
+          x: 90,
+          y: 940,
+          width: barcodeWidth,
+          height: barcodeHeight,
+          stamp: barcodeBlob 
+        }
+        const barcodeStamp = await Dynamsoft.DDV.annotationManager.createAnnotation(pageUid, "stamp", barcodeStampOptions);
+        editViewer.goToPage(doc.pages.length - 1);
+      });
+    }
+
+    function getSenderText(){
+      let text = document.getElementById("senderName").value + "\n";
+      text = text + document.getElementById("senderPhone").value + "\n";
+      text = text + document.getElementById("senderAddressLineOne").value + "\n";
+      text = text + document.getElementById("senderAddressLineTwo").value;
+      return [{content: text, fontSize: 22}]
+    }
+
+    function getReceiverText(){
+      let text = document.getElementById("receiverName").value + "\n";
+      text = text + document.getElementById("receiverPhone").value + "\n";
+      text = text + document.getElementById("receiverAddressLineOne").value + "\n";
+      text = text + document.getElementById("receiverAddressLineTwo").value;
+      return [{content: text, fontSize: 22}]
+    }
+
+    function getDataFor2D(){
+      let data = {
+        "senderName": document.getElementById("senderName").value,
+        "receiverName": document.getElementById("receiverName").value,
+        "packageNumber": document.getElementById("packageNumber").value
+      }
+      return data;
+    }
+
+    function fillInTemplate(){
+      document.getElementById("senderName").value = "Tom Ford";
+      document.getElementById("senderPhone").value = "+44-3381-291-918";
+      document.getElementById("senderAddressLineOne").value = "536 The Crescent MOTHERWELL";
+      document.getElementById("senderAddressLineTwo").value = "ML81 7LR";
+      document.getElementById("receiverName").value = "Mark Selby";
+      document.getElementById("receiverPhone").value = "+44-3154-235-146";
+      document.getElementById("receiverAddressLineOne").value = "41 George Street LERWICK";
+      document.getElementById("receiverAddressLineTwo").value = "ZE37 3OM";
+      document.getElementById("packageNumber").value = "ABCDEF1234567890";
+    }
+  </script>
+</body>
+</html>
