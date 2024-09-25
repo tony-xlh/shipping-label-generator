@@ -35,6 +35,8 @@
     }
 
     #container {
+      margin-top: 20px;
+      width: 80%;
       height: 480px;
     }
   </style>
@@ -102,12 +104,12 @@
         </div>
       </div>
     </div>
+    <div class="barcodes" style="display: none;">
+      <div id="code128"><canvas id="code128CVS"></canvas></div>
+      <div id="qrcode"><canvas id="qrcodeCVS"></canvas></div>
+    </div>
+    <div id="container"></div>
   </div>
-  <div class="barcodes" style="display: none;">
-    <div id="code128"><canvas id="code128CVS"></canvas></div>
-    <div id="qrcode"><canvas id="qrcodeCVS"></canvas></div>
-  </div>
-  <div id="container"></div>
   <script>
     let editViewer;
     let doc;
