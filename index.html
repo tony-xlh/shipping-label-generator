@@ -59,12 +59,27 @@
         </div>
         <div>
           <label for="senderAddressLineOne">
-            Address Line 1: <input id="senderAddressLineOne" type="text"/>
+            Address line 1: <input id="senderAddressLineOne" type="text"/>
           </label>
         </div>
         <div>
           <label for="senderAddressLineTwo">
-            Address Line 2: <input id="senderAddressLineTwo" type="text"/>
+            Address line 2: <input id="senderAddressLineTwo" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderCity">
+            City: <input id="senderCity" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderState">
+            State/Province: <input id="senderState" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="senderPostalCode">
+            Postal code: <input id="senderPostalCode" type="text"/>
           </label>
         </div>
       </div>
@@ -82,12 +97,27 @@
         </div>
         <div>
           <label for="receiverAddressLineOne">
-            Address Line 1: <input id="receiverAddressLineOne" type="text"/>
+            Address line 1: <input id="receiverAddressLineOne" type="text"/>
           </label>
         </div>
         <div>
           <label for="receiverAddressLineTwo">
-            Address Line 2: <input id="receiverAddressLineTwo" type="text"/>
+            Address line 2: <input id="receiverAddressLineTwo" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverCity">
+            City: <input id="receiverCity" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverState">
+            State/Province: <input id="receiverState" type="text"/>
+          </label>
+        </div>
+        <div>
+          <label for="receiverPostalCode">
+            Postal code: <input id="receiverPostalCode" type="text"/>
           </label>
         </div>
       </div>
@@ -267,7 +297,10 @@
       let text = document.getElementById("senderName").value + "\n";
       text = text + document.getElementById("senderPhone").value + "\n";
       text = text + document.getElementById("senderAddressLineOne").value + "\n";
-      text = text + document.getElementById("senderAddressLineTwo").value;
+      if (document.getElementById("senderAddressLineTwo").value) {
+        text = text + document.getElementById("senderAddressLineTwo").value + "\n";
+      }
+      text = text + document.getElementById("senderCity").value + ", " + document.getElementById("senderState").value + " " + document.getElementById("senderPostalCode").value;
       return [{content: text, fontSize: 22}]
     }
 
@@ -275,7 +308,10 @@
       let text = document.getElementById("receiverName").value + "\n";
       text = text + document.getElementById("receiverPhone").value + "\n";
       text = text + document.getElementById("receiverAddressLineOne").value + "\n";
-      text = text + document.getElementById("receiverAddressLineTwo").value;
+      if (document.getElementById("receiverAddressLineTwo").value) {
+        text = text + document.getElementById("receiverAddressLineTwo").value + "\n";
+      }
+      text = text + document.getElementById("receiverCity").value + ", " + document.getElementById("receiverState").value + " " + document.getElementById("receiverPostalCode").value;
       return [{content: text, fontSize: 22}]
     }
 
@@ -290,13 +326,19 @@
 
     function fillInTemplate(){
       document.getElementById("senderName").value = "Tom Ford";
-      document.getElementById("senderPhone").value = "+44-3381-291-918";
+      document.getElementById("senderPhone").value = "(907) 776-8808";
       document.getElementById("senderAddressLineOne").value = "536 The Crescent MOTHERWELL";
-      document.getElementById("senderAddressLineTwo").value = "ML81 7LR";
+      document.getElementById("senderAddressLineTwo").value = "";
+      document.getElementById("senderState").value = "Alaska";
+      document.getElementById("senderCity").value = "Kenai";
+      document.getElementById("senderPostalCode").value = "99";
       document.getElementById("receiverName").value = "Mark Selby";
-      document.getElementById("receiverPhone").value = "+44-3154-235-146";
+      document.getElementById("receiverPhone").value = "(901) 324-3127";
       document.getElementById("receiverAddressLineOne").value = "41 George Street LERWICK";
-      document.getElementById("receiverAddressLineTwo").value = "ZE37 3OM";
+      document.getElementById("receiverAddressLineTwo").value = "";
+      document.getElementById("receiverState").value = "Alaska";
+      document.getElementById("receiverCity").value = "Fort Wainwright";
+      document.getElementById("receiverPostalCode").value = "99";
       document.getElementById("packageNumber").value = "ABCDEF1234567890";
     }
   </script>
