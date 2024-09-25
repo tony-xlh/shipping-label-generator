@@ -11,5 +11,6 @@ Libraries used:
 
 Sample shippling label generated:
 
-![doc-1727231915288-0 pdf-001](https://github.com/user-attachments/assets/173071a1-7149-4463-bf6a-d3364cc223c7)
+![shipping-label](https://github.com/user-attachments/assets/4ea3be8f-0c77-4c52-8556-ac94633a3c3f)
+
 
