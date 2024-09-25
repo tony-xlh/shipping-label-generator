@@ -142,6 +142,7 @@
       let code128CVS = bwipjs.toCanvas("code128CVS",{
         bcid:        'code128',       // Barcode type
         text:        document.getElementById("packageNumber").value,    // Text to encode
+        scale:       5,
         height:      12,              // Bar height, in millimeters
         includetext: true,            // Show human-readable text
         textxalign:  'center',        // Always good to set this
@@ -152,6 +153,7 @@
       let qrcodeCVS = bwipjs.toCanvas("qrcodeCVS",{
         bcid:        'qrcode',       // Barcode type
         text:        text,    // Text to encode
+        scale:       5
       });
       drawLabel();
     }
